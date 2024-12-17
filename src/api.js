@@ -11,3 +11,8 @@ export const fetchArticles = async () => {
     throw error;
   }
 };
+
+export const fetchArticleById = (article_id) => {
+  return axios.get(`${BASE_URL}/articles/${article_id}`)
+    .then((response) => response.data.article);
+};
