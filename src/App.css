@@ -18,25 +18,66 @@
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+header {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  text-align: center;
 }
 
-.card {
-  padding: 2em;
+nav ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
 }
 
-.read-the-docs {
-  color: #888;
+nav ul li {
+  display: inline;
 }
+
+nav ul li a {
+  text-decoration: none;
+  color: #007bff;
+}
+
+nav ul li a:hover {
+  text-decoration: underline;
+}
+
+.articles-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.article-card {
+  border: 1px solid #ddd;
+  padding: 1rem;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.article-card h3 {
+  margin: 0 0 0.5rem;
+}
+
+.article-card p {
+  margin: 0.25rem 0;
+}
+
+.article-card img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 5px;
+}
+
