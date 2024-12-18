@@ -7,20 +7,26 @@ import { Link } from "react-router-dom";
 function AllArticles() {
   const [articles, setArticles] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
+    setIsLoading(true); 
+    setError(null);
+
     fetchArticles()
       .then((fetchedArticles) => {
         setArticles(fetchedArticles);
         setIsLoading(false);
       })
-      .catch((error) => {
-        console.error('Error loading articles:', error);
+      .catch((err) => {
+        console.error("Error fetching articles:", err);
+        setError("Failed to load articles.");
         setIsLoading(false);
       });
   }, []);
 
   if (isLoading) return <p>Loading articles...</p>;
+  if (error) return <p>{error}</p>;
 
   return (
     <section>

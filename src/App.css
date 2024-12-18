@@ -53,6 +53,17 @@ nav ul li a:hover {
   text-decoration: underline;
 }
 
+.article-content {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  margin-top: 40px;
+  border-radius: 5px;
+}
+
+.article-info p {
+  margin: 0;
+}
+
 .articles-list {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -98,5 +109,47 @@ nav ul li a:hover {
 }
 
 .comment-card p {
-  margin: 5px 0;
+  margin: 0;
+}
+
+.comment-txt {
+  text-align: left;
+  padding: 1rem;
+}
+
+.article-votes {
+  display: flex;
+  align-items: center;
+  margin-top: -20px;
+  margin-left: 1rem;
+}
+
+.article-votes span {
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.article-votes p {
+  margin: 10;
+  font-size: 1.5rem;
+}
+
+.vote-star {
+  cursor: pointer;
+  font-size: 2rem;
+  color: gray;
+  transition: color 0.3s ease;
+}
+
+.vote-star.voted {
+  color: rgb(255, 200, 0);
+}
+
+.vote-star:hover {
+  color: orange;
+}
+
+.vote-count {
+  margin-left: 10px;
+  font-size: 1.5rem;
 }
