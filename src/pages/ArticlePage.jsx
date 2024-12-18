@@ -3,17 +3,19 @@ import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { fetchArticleById, 
     fetchCommentsByArticleId,
-    updateArticleVotes } from "../api";
+    updateArticleVotes,
+    postComment, deleteComment } from "../api";
 
 function ArticlePage() {
     const { article_id } = useParams();
     const [article, setArticle] = useState(null);
     const [comments, setComments] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [newComment, setNewComment] = useState("");
+    const [username, setUsername] = useState("");
     const [hasVoted, setHasVoted] = useState(false);
     const [plusVotes, setPlusVotes] = useState(0);
-
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
   
     useEffect(() => {
         setIsLoading(true);
@@ -26,7 +28,7 @@ function ArticlePage() {
         })
             .catch((err) => {
                 console.error("Error fetching article:", err);
-                setError("Failed to load article.");
+                setArticle(null);
                 setIsLoading(false);
         });
     
@@ -51,18 +53,70 @@ function ArticlePage() {
         setPlusVotes(updatedVotes);
         setHasVoted(!hasVoted);
     
-        updateArticleVotes(article_id, voteChange).catch((err) => {
-          console.error("Voting failed:", err);
-          setError("Failed to update vote.");
-    
-          setPlusVotes((prevVotes) => prevVotes - voteChange);
-          setHasVoted((prevHasVoted) => !prevHasVoted);
+        updateArticleVotes(article_id, voteChange)
+            .catch((err) => {
+                console.error("Voting failed:", err);
+                setError("Failed to update vote.");
+            
+                setPlusVotes((prevVotes) => prevVotes - voteChange);
+                setHasVoted((prevHasVoted) => !prevHasVoted);
         });
     };
+
+    const handleCommentSubmit = (e) => {
+        e.preventDefault();
+    
+        if (!newComment || !username) {
+            setError("Please provide a username and comment.");
+            return;
+        }
+  
+        setIsLoading(true);
+        setError(null);
+    
+        const commentData = {
+            username,
+            body: newComment,
+        };
+    
+        postComment(article_id, commentData)
+            .then((addedComment) => {
+                setComments([addedComment, ...comments]);
+                setNewComment("");
+                setUsername("");
+                setError("");
+                setIsLoading(false);
+            })
+            .catch((err) => {
+                console.error("Error posting comment:", err);
+                if (err.response && err.response.data.msg === "User not found") {
+                    setError("Please enter your REGISTERED name or register on the site to add a comment!");
+                } else {
+                    setError("Failed to post comment.");
+                }
+                setIsLoading(false);
+            });
+    };
+
+    const handleDeleteComment = (comment_id) => {
+        setIsLoading(true);
+        setError(null);
+      
+        deleteComment(comment_id)
+            .then(() => {
+                setComments(comments.filter(comment => comment.comment_id !== comment_id));
+                setIsLoading(false);
+            })
+            .catch((err) => {
+                console.error("Error deleting comment:", err);
+                setError("Failed to delete comment.");
+                setIsLoading(false);
+            });
+      };
   
     if (isLoading) return <p>Loading article...</p>; 
     if (!article) return <p>Article not found</p>; 
-    if (error) return <p>{error}</p>;
+    // if (error) return <p>{error}</p>;
   
     return (
         <div className="single-article">
@@ -88,7 +142,31 @@ function ArticlePage() {
             </div>
     
             <div className="comments-section">
-            <h3>Comments</h3>
+            <h3>Comments:</h3>
+
+
+            <form onSubmit={handleCommentSubmit}>
+                <input
+                    type="text"
+                    placeholder="Your name"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    required
+                />
+                <textarea
+                    placeholder="Your comment"
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
+                    required
+                />
+                <button type="submit" disabled={isLoading}>
+                    {isLoading ? "Posting..." : "Post Comment"}
+                </button>
+            </form>
+
+            {error && <p className="error-message">{error}</p>}
+
+
             {comments.length === 0 ? (
                 <p>No comments yet</p>
             ) : (
@@ -96,6 +174,7 @@ function ArticlePage() {
                 <div key={comment.comment_id} className="comment-card">
                     <p><strong>{comment.author}</strong> <em>{new Date(comment.created_at).toLocaleString()}</em></p>
                     <p className="comment-txt">{comment.body}</p>
+                    <button onClick={() => handleDeleteComment(comment.comment_id)}>Delete</button>
                 </div>
                 ))
             )}
