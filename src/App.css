@@ -81,3 +81,22 @@ nav ul li a:hover {
   border-radius: 5px;
 }
 
+.single-article {
+  padding: 20px;
+}
+
+.comments-section {
+  margin-top: 40px;
+}
+
+.comment-card {
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.comment-card p {
+  margin: 5px 0;
+}
