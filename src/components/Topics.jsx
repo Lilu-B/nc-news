@@ -40,8 +40,8 @@ function Topics() {
       coding: codingImg,
     };
 
-    const image = images[topicSlug];
-  console.log(`Topic: ${topicSlug}, Image: ${image}`);
+//     const image = images[topicSlug];
+//   console.log(`Topic: ${topicSlug}, Image: ${image}`);
 
     return images[topicSlug] || null;
   };
@@ -50,8 +50,8 @@ function Topics() {
     <div className="topics-list">
         {topics.map((topic) => (
 
-        <Link to={`/topics/${topic.slug}`} className="topic-link">
-            <div key={topic.slug} className="topic-card">
+        <Link to={`/topics/${topic.slug}`} key={topic.slug} className="topic-link">
+            <div className="topic-card">
                 <img
                 src={getTopicImage(topic.slug)}
                 alt={topic.slug}
