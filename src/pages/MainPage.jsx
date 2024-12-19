@@ -1,20 +1,16 @@
 import React from 'react';
 import Navigation from '../components/Navigation';
-import AllArticles from './AllArticles';
-
+import AllArticlesSlice from '../components/AllArticlesSlice';
+import Topics from '../components/Topics'
+import Header from '../components/Header';
 
 function MainPage() {
-    return (
-      <>
-        <header>
-          <Navigation />
-          <h1>Welcome to NC News</h1>
-        </header>
-        <main>
-          <AllArticles />
-        </main>
-      </>
-    );
+  return (
+    <Header>
+      <Topics />
+      <AllArticlesSlice />
+    </Header>
+  );
 }
   
 export default MainPage;

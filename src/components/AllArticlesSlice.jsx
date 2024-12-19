@@ -3,9 +3,8 @@ import { useState, useEffect } from 'react';
 import { fetchArticles } from '../api';
 import ArticleCard from '../components/ArticleCard';
 import { Link } from "react-router-dom";
-import Header from '../components/Header';
 
-function AllArticles() {
+function AllArticlesSlice() {
   const [articles, setArticles] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -16,7 +15,7 @@ function AllArticles() {
 
     fetchArticles()
       .then((fetchedArticles) => {
-        setArticles(fetchedArticles);
+        setArticles(fetchedArticles.slice(0, 6));
         setIsLoading(false);
       })
       .catch((err) => {
@@ -30,9 +29,8 @@ function AllArticles() {
   if (error) return <p>{error}</p>;
 
   return (
-    <Header>
     <section>
-      <h2>All Articles</h2>
+      <h2>Our Articles</h2>
       {isLoading ? (
         <p>Loading articles...</p>
       ) : (
@@ -52,9 +50,8 @@ function AllArticles() {
           ))}
         </div>
       )}
+        <Link to="/articles" className="view-all-btn">View all...</Link>
     </section>
-    </Header>
-  );
-}
+  )}
 
-export default AllArticles;
+  export default AllArticlesSlice

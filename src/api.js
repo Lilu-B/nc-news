@@ -32,3 +32,8 @@ export const updateArticleVotes = (article_id, inc_votes) => {
   return axios.patch(`${BASE_URL}/articles/${article_id}`, { inc_votes })
     .then((response) => response.data.article);
 };
+
+export const fetchTopics = () => {
+  return axios.get(`${BASE_URL}/topics`)
+    .then((response) => response.data.topics);
+};
