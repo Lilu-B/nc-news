@@ -1,9 +1,10 @@
 import React from "react";
+import CommentsBlock from "../components/CommentsBlock";
+import VoteHandler from "../components/VoteHandler";
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { fetchArticleById, 
     fetchCommentsByArticleId,
-    updateArticleVotes,
     postComment, deleteComment } from "../api";
 
 function ArticlePage() {
@@ -12,10 +13,22 @@ function ArticlePage() {
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState("");
     const [username, setUsername] = useState("");
-    const [hasVoted, setHasVoted] = useState(false);
-    const [plusVotes, setPlusVotes] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    const updateVotes = (voteChange) => {
+        setArticle((prevArticle) => ({
+            ...prevArticle,
+            votes: prevArticle.votes + voteChange
+        }));
+    };
+
+    const { plusVotes, hasVoted, handleVoteClick, error: voteError } = VoteHandler(
+        article_id, 
+        article ? article.votes : 0,
+        updateVotes
+    );
+
   
     useEffect(() => {
         setIsLoading(true);
@@ -43,25 +56,6 @@ function ArticlePage() {
                 setIsLoading(false);
             });
     }, [article_id]); 
-
-    const handleVoteClick = () => {
-        if (!article) return;
-    
-        const voteChange = hasVoted ? -1 : 1;
-        const updatedVotes = plusVotes + voteChange;
-    
-        setPlusVotes(updatedVotes);
-        setHasVoted(!hasVoted);
-    
-        updateArticleVotes(article_id, voteChange)
-            .catch((err) => {
-                console.error("Voting failed:", err);
-                setError("Failed to update vote.");
-            
-                setPlusVotes((prevVotes) => prevVotes - voteChange);
-                setHasVoted((prevHasVoted) => !prevHasVoted);
-        });
-    };
 
     const handleCommentSubmit = (e) => {
         e.preventDefault();
@@ -120,6 +114,7 @@ function ArticlePage() {
   
     return (
         <div className="single-article">
+
             <h1>{article.title}</h1>
             <img src={article.article_img_url} alt={`Image for ${article.title}`} />
 
@@ -129,56 +124,31 @@ function ArticlePage() {
                 <p>Created: {new Date(article.created_at).toLocaleString()}</p>
             </div>
 
+
             <div className="article-content">
                 <div className="article-votes">
                     <span
-                        className={`vote-star ${hasVoted ? "voted" : ""}`}
-                        onClick={handleVoteClick}
+                        className={`vote-star ${hasVoted ? "voted" : ""} ${isLoading ? "disabled" : ""}`}
+                        onClick={!isLoading ? handleVoteClick : null}
                         title={hasVoted ? "Remove your vote" : "Add your vote"}
                     > ★ </span>
                     <p className="vote-count">{plusVotes}</p>
                 </div>
                 {article.body}
+                {voteError && <p className="error-message">{voteError}</p>}
             </div>
-    
-            <div className="comments-section">
-            <h3>Comments:</h3>
 
-
-            <form onSubmit={handleCommentSubmit}>
-                <input
-                    type="text"
-                    placeholder="Your name"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    required
-                />
-                <textarea
-                    placeholder="Your comment"
-                    value={newComment}
-                    onChange={(e) => setNewComment(e.target.value)}
-                    required
-                />
-                <button type="submit" disabled={isLoading}>
-                    {isLoading ? "Posting..." : "Post Comment"}
-                </button>
-            </form>
-
-            {error && <p className="error-message">{error}</p>}
-
-
-            {comments.length === 0 ? (
-                <p>No comments yet</p>
-            ) : (
-                comments.map((comment) => (
-                <div key={comment.comment_id} className="comment-card">
-                    <p><strong>{comment.author}</strong> <em>{new Date(comment.created_at).toLocaleString()}</em></p>
-                    <p className="comment-txt">{comment.body}</p>
-                    <button onClick={() => handleDeleteComment(comment.comment_id)}>Delete</button>
-                </div>
-                ))
-            )}
-            </div>
+            <CommentsBlock
+                comments={comments}
+                newComment={newComment}
+                username={username}
+                handleCommentSubmit={handleCommentSubmit}
+                handleDeleteComment={handleDeleteComment}
+                setNewComment={setNewComment}
+                setUsername={setUsername}
+                error={error}
+                isLoading={isLoading}
+            />
         </div>
     );
   }

@@ -32,7 +32,7 @@ function AllArticles() {
   return (
     <Header>
     <section>
-      <h2>All Articles</h2>
+      <h2>All Articles:</h2>
       {isLoading ? (
         <p>Loading articles...</p>
       ) : (

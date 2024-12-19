@@ -30,7 +30,7 @@ function AllArticlesSlice() {
 
   return (
     <section>
-      <h2>Our Articles</h2>
+      <h2>Our Articles:</h2>
       {isLoading ? (
         <p>Loading articles...</p>
       ) : (
