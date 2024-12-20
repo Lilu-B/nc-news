@@ -1,6 +1,7 @@
 import React from "react";
 import CommentsBlock from "../components/CommentsBlock";
 import VoteHandler from "../components/VoteHandler";
+import Header from '../components/Header';
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { fetchArticleById, 
@@ -113,9 +114,11 @@ function ArticlePage() {
     // if (error) return <p>{error}</p>;
   
     return (
+        <>
+        <Header></Header>
         <div className="single-article">
 
-            <h1>{article.title}</h1>
+            <h1>"{article.title}"</h1>
             <img src={article.article_img_url} alt={`Image for ${article.title}`} />
 
             <div className="article-info">
@@ -150,6 +153,7 @@ function ArticlePage() {
                 isLoading={isLoading}
             />
         </div>
+        </>
     );
   }
   
