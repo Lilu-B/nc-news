@@ -1,4 +1,5 @@
 import axios from 'axios';
+import buildQueryParams from '../src/components/SortByParams';
 
 const BASE_URL = 'https://project-news-liliia.onrender.com/api';
 
@@ -18,6 +19,32 @@ export const fetchCommentsByArticleId = (article_id) => {
     .then((response) => response.data.comments);
 };
 
+
+export const fetchArticlesWithParams = ({ topic, sortBy = 'created_at', order = 'desc' } = {}) => {
+  const query = new URLSearchParams({
+    sort_by: sortBy,
+    order: order,
+    ...(topic && { topic }), // Добавляем фильтр по теме, если указан
+  }).toString();
+
+  return axios.get(`${BASE_URL}/articles?${query}`)
+    .then((response) => response.data.articles)
+    .catch((error) => {
+      console.error("Error fetching articles:", error);
+      throw new Error("Failed to load articles.");
+    });
+};
+// export const fetchArticlesWithParams = ({ topic, sortBy, order } = {}) => {
+//   const query = buildQueryParams({ topic, sortBy, order });
+//   return axios.get(`${BASE_URL}/articles?${query}`)
+//     .then((response) => response.data.articles);
+// };
+
+export const updateArticleVotes = (article_id, inc_votes) => {
+  return axios.patch(`${BASE_URL}/articles/${article_id}`, { inc_votes })
+    .then((response) => response.data.article);
+};
+
 export const postComment = (article_id, commentData) => {
   return axios.post(`${BASE_URL}/articles/${article_id}/comments`, commentData)
     .then((response) => response.data.comment);
@@ -26,11 +53,6 @@ export const postComment = (article_id, commentData) => {
 export const deleteComment = (comment_id) => {
   return axios.delete(`${BASE_URL}/comments/${comment_id}`)
     .then(() => null);
-};
-
-export const updateArticleVotes = (article_id, inc_votes) => {
-  return axios.patch(`${BASE_URL}/articles/${article_id}`, { inc_votes })
-    .then((response) => response.data.article);
 };
 
 export const fetchTopics = () => {
