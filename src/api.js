@@ -24,7 +24,7 @@ export const fetchArticlesWithParams = ({ topic, sortBy = 'created_at', order = 
   const query = new URLSearchParams({
     sort_by: sortBy,
     order: order,
-    ...(topic && { topic }), // Добавляем фильтр по теме, если указан
+    ...(topic && { topic }),
   }).toString();
 
   return axios.get(`${BASE_URL}/articles?${query}`)
@@ -34,11 +34,6 @@ export const fetchArticlesWithParams = ({ topic, sortBy = 'created_at', order = 
       throw new Error("Failed to load articles.");
     });
 };
-// export const fetchArticlesWithParams = ({ topic, sortBy, order } = {}) => {
-//   const query = buildQueryParams({ topic, sortBy, order });
-//   return axios.get(`${BASE_URL}/articles?${query}`)
-//     .then((response) => response.data.articles);
-// };
 
 export const updateArticleVotes = (article_id, inc_votes) => {
   return axios.patch(`${BASE_URL}/articles/${article_id}`, { inc_votes })
